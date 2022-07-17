@@ -17,6 +17,10 @@ const addTodo = (event) => {
 	newTodo.classList.add("todo-item");
 	todoDiv.appendChild(newTodo);
 
+	//Add todo to localstorage
+
+	saveLocalTodos(todoInput.value);
+
 	//Check Mark Button
 	const completedButton = document.createElement("button");
 	completedButton.innerHTML = '<i class="fas fa-check"></li>';
@@ -44,6 +48,7 @@ const deleteCheck = (e) => {
 
 		//Animation
 		todo.classList.add("fall");
+		removeLocalTodos(todo);
 		todo.addEventListener("transitionend", () => {
 			todo.remove();
 		});
@@ -83,6 +88,68 @@ const filterTodo = (e) => {
 	});
 };
 
+const saveLocalTodos = (todo) => {
+	let todos;
+
+	if (localStorage.getItem("todos") === null) {
+		todos = [];
+	} else {
+		todos = JSON.parse(localStorage.getItem("todos"));
+	}
+
+	todos.push(todo);
+	localStorage.setItem("todos", JSON.stringify(todos));
+};
+
+const getTodos = (todo) => {
+	let todos;
+	if (localStorage.getItem("todos") === null) {
+		todos = [];
+	} else {
+		todos = JSON.parse(localStorage.getItem("todos"));
+	}
+	todos.forEach((todo) => {
+		const todoDiv = document.createElement("div");
+		todoDiv.classList.add("todo");
+
+		//Create LI
+		const newTodo = document.createElement("li");
+		newTodo.innerText = todo;
+		newTodo.classList.add("todo-item");
+		todoDiv.appendChild(newTodo);
+
+		//Check Mark Button
+		const completedButton = document.createElement("button");
+		completedButton.innerHTML = '<i class="fas fa-check"></li>';
+		completedButton.classList.add("complete-btn");
+		todoDiv.appendChild(completedButton);
+
+		//Trash Button
+		const trashButton = document.createElement("button");
+		trashButton.innerHTML = '<i class="fas fa-trash"></li>';
+		trashButton.classList.add("trash-btn");
+		todoDiv.appendChild(trashButton);
+
+		//Append to List
+		todoList.prepend(todoDiv);
+	});
+};
+
+const removeLocalTodos = (todo) => {
+	let todos;
+
+	if (localStorage.getItem("todos") === null) {
+		todos = [];
+	} else {
+		todos = JSON.parse(localStorage.getItem("todos"));
+	}
+
+	const todoIndex = todo.children[0].innerHTML;
+	todos.splice(todos.indexOf(todoIndex), 1);
+	localStorage.setItem("todos", JSON.stringify(todos));
+};
+
+document.addEventListener("DOMContentLoaded", getTodos);
 todoButton.addEventListener("click", addTodo);
 todoList.addEventListener("click", deleteCheck);
 filterOption.addEventListener("click", filterTodo);

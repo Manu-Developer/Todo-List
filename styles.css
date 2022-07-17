@@ -182,6 +182,7 @@ select {
 .filter-todo {
 	width: 15rem;
 }
+
 @media (max-width: 768px) {
 	form {
 		flex-direction: column;
